@@ -1,0 +1,145 @@
+{
+	"info": {
+		"_postman_id": "224581f7-5548-49e8-859f-77703d4b6a81",
+		"name": "TOTP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1903096",
+		"_collection_link": "https://winter-equinox-427920.postman.co/workspace/Agora~1e768f47-44f9-442f-a0b5-ef755e4129ea/collection/1903096-224581f7-5548-49e8-859f-77703d4b6a81?action=share&source=collection_link&creator=1903096"
+	},
+	"item": [
+		{
+			"name": "Enroll",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let otp = pm.response.text();\r",
+							"pm.environment.set(\"generatedSecret\", JSON.parse(secret).secret);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"secret\": \"LA_SEMILLA_GENERADA_EN_BASE32\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/totp/enroll",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"totp",
+						"enroll"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate OTP",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let otp = pm.response.text();\r",
+							"let secret = pm.request.body.raw;\r",
+							"\r",
+							"pm.environment.set(\"generatedOtp\", otp);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"secret\": \"{{generatedSecret}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/totp/generate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"totp",
+						"generate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Validate OTP",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"secret\": \"{{generatedSecret}}\",\r\n  \"otp\": \"{{generatedOtp}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/totp/validate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"totp",
+						"validate"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
